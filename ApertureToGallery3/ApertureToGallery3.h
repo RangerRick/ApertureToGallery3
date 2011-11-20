@@ -27,10 +27,6 @@
         // The lock used to protect all access to the ApertureExportProgress structure
         NSLock *_progressLock;
         
-        // Top-level objects in the nib are automatically retained - this array
-        // tracks those, and releases them
-        NSArray *_topLevelNibObjects;
-        
         // The structure used to pass all progress information back to Aperture
         ApertureExportProgress exportProgress;
         
@@ -86,15 +82,15 @@
     BOOL                running;
 }
 
-@property (retain) RestfulGallery    *gallery;
-@property (retain) GalleryAlbum      *rootGalleryAlbum;
-@property (retain) AddPhotoQueueItem *currentItem;
-@property (retain) NSMutableArray    *galleryDirectory;
-@property (retain) NSString          *galleryApiKey;
+@property (strong) RestfulGallery    *gallery;
+@property (strong) GalleryAlbum      *rootGalleryAlbum;
+@property (strong) AddPhotoQueueItem *currentItem;
+@property (strong) NSMutableArray    *galleryDirectory;
+@property (strong) NSString          *galleryApiKey;
 //@property (retain) NSNumber          *photoCount;
 //@property (retain) NSNumber          *uploadedPhotos;
 @property          BOOL              cancel;
-@property (retain) NSString          *waterMarkImageName;
+@property (strong) NSString          *waterMarkImageName;
 
 
 

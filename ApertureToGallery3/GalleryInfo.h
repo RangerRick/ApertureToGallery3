@@ -18,9 +18,9 @@
 
 - (id)initWithName:(NSString*)myName andUrl:(NSString*)myUrl andUsername:(NSString*)myUsername andKey:(NSString*)myKey;
 
-@property(retain) NSString *name;
-@property(retain) NSString *url;
-@property(retain) NSString *key;
-@property(retain) NSString *username;
+@property(strong) NSString *name;
+@property(strong) NSString *url;
+@property(strong) NSString *key;
+@property(strong) NSString *username;
 
 @end

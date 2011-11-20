@@ -18,10 +18,10 @@
     
 }
 
-@property (retain) NSString            *path;
-@property (retain) NSString            *url;
-@property (retain) NSMutableDictionary *parameters;
-@property (retain) NSNumber            *uploadAttempts;
+@property (strong) NSString            *path;
+@property (strong) NSString            *url;
+@property (strong) NSMutableDictionary *parameters;
+@property (strong) NSNumber            *uploadAttempts;
 @property          BOOL                isPhoto;
 
 

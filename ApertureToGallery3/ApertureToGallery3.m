@@ -36,7 +36,7 @@
 	if ((self = [super init]))
 	{
 		_apiManager	= apiManager;
-		_exportManager = [[_apiManager apiForProtocol:@protocol(ApertureExportManager)] retain];
+		_exportManager = [_apiManager apiForProtocol:@protocol(ApertureExportManager)];
 		if (!_exportManager)
 			return nil;
 		
@@ -71,7 +71,7 @@
         
         //Stuff for the export
         // Create our temporary directory
-		tempDirectoryPath = [[NSString stringWithFormat:@"%@/Gallery3Export/", NSTemporaryDirectory()] retain];
+		tempDirectoryPath = [NSString stringWithFormat:@"%@/Gallery3Export/", NSTemporaryDirectory()];
 		
 		// If it doesn't exist, create it
 		NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -108,37 +108,15 @@
 
 - (void)dealloc
 {
-    // Release the top-level objects from the nib.
-	[_topLevelNibObjects makeObjectsPerformSelector:@selector(release)];
-	[_topLevelNibObjects release];
-	
-	
-    self.gallery                  = nil;
-    self.rootGalleryAlbum         = nil;
-    self.galleryApiKey            = nil;
-    self.galleryDirectory         = nil;
-    self.currentItem              = nil;
-    self.waterMarkImageName       = nil;
 //    self.photoCount               = nil;
 //    self.uploadedPhotos           = nil;
-    [addPhotoQueue release];
-    [retryPhotoQueue release];
-    [donePhotoQueue release];
-    [errorPhotoQueue release];
     
-    [preferences release];
     preferences = nil;
     
     // Clean up the temporary files
     [[NSFileManager defaultManager] removeItemAtPath:tempDirectoryPath error:nil];
-	[tempDirectoryPath release];
     
-    [exportProgress.message autorelease];
     
-	[_progressLock release];
-	[_exportManager release];
-    
-	[super dealloc];
 }
 
 
@@ -154,9 +132,7 @@
 		// them properly in dealloc
 		NSBundle *myBundle = [NSBundle bundleForClass:[self class]];
 		NSNib *myNib = [[NSNib alloc] initWithNibNamed:@"ApertureToGallery3" bundle:myBundle];
-		if ([myNib instantiateNibWithOwner:self topLevelObjects:&_topLevelNibObjects])
-		{
-			[_topLevelNibObjects retain];
+    [myNib instantiateNibWithOwner:self topLevelObjects:NULL];
             if( [galleryDirectory count] > 0 )
             {
                 [galleryDirectoryController setSelectionIndex:[selectedGalleryIndex integerValue]];
@@ -184,13 +160,11 @@
                 self.waterMarkImageName = [preferences valueForKey:@"SELECTED_WATERMARK_IMAGE"];
             }
             
-            Version *versionTracker = [[[Version alloc] init] autorelease];
+            Version *versionTracker = [[Version alloc] init];
             [versionLabel setStringValue:[NSString stringWithFormat:@"Version %03.1f-%03.1f", 
                                           [versionTracker.ApertureToGalleryVersion doubleValue], 
                                           [versionTracker.RestfulGalleryVersion doubleValue] ] ];
         }
-        [myNib release];        
-	}
 	
 	return settingsView;
 }
@@ -282,8 +256,7 @@
         exportProgress.totalValue = [_exportManager imageCount];
         exportProgress.currentValue = 1;
         exportProgress.indeterminateProgress = NO;
-        [exportProgress.message autorelease];
-        exportProgress.message = [[NSString stringWithFormat:@"Step 1 of 2: Preparing Images..."] retain];
+        exportProgress.message = (__bridge_retained void *)([NSString stringWithFormat:@"Step 1 of 2: Preparing Images..."]);
         [self unlockProgress];
                 
         // The test was successful, we have set the progress correctly, and are ready for Aperture to begin generating image data.
@@ -378,7 +351,6 @@
                                                                               dictionaryWithObjects:[NSArray arrayWithObjects:[tempFilePath lastPathComponent], @"", nil] 
                                                                               forKeys:[NSArray arrayWithObjects:@"title", @"description", nil ]]];
             [addPhotoQueue addObject:item];
-            [item release];
         }
 //        [NSThread detachNewThreadSelector:@selector(startExportInNewThread) toTarget:self withObject:nil];
         [self processAddPhotoQueue];
@@ -388,16 +360,16 @@
 // this is necessary as the NSURLConnection does not work well except in NSDefaultRunLoopMode - which is not the modal panel run mode.
 -(void)startExportInNewThread
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [self processAddPhotoQueue];
-    running = YES;
-    while(running) {
-        if( ![[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:100000]] )
-        {
-            break;
-        }
+    @autoreleasepool {
+        [self processAddPhotoQueue];
+        running = YES;
+        while(running) {
+            if( ![[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:100000]] )
+            {
+                break;
+            }
+        }    
     }    
-    [pool release];    
 }
 
 - (void)exportManagerShouldCancelExport
@@ -449,12 +421,11 @@
         {
             [self lockProgress];
             exportProgress.currentValue = 0;
-            [exportProgress.message autorelease];
-            exportProgress.message = [[NSString stringWithFormat:@"Step 2 of 2: Uploading Image %d of %d (retry %d)", 
+            exportProgress.message = (__bridge_retained void *)([NSString stringWithFormat:@"Step 2 of 2: Uploading Image %d of %d (retry %d)", 
                                        [donePhotoQueue count] + [errorPhotoQueue count] + 1, 
                                        [addPhotoQueue count]  + [retryPhotoQueue count] 
                                        + [donePhotoQueue count] + [errorPhotoQueue count],
-                                       + [currentItem.uploadAttempts intValue] ] retain];
+                                       + [currentItem.uploadAttempts intValue] ]);
             [self unlockProgress];
             
             self.currentItem = [retryPhotoQueue objectAtIndex:0];
@@ -465,11 +436,10 @@
         {
             [self lockProgress];
             exportProgress.currentValue = 0;
-            [exportProgress.message autorelease];
-            exportProgress.message = [[NSString stringWithFormat:@"Step 2 of 2: Uploading Image %d of %d", 
+            exportProgress.message = (__bridge_retained void *)([NSString stringWithFormat:@"Step 2 of 2: Uploading Image %d of %d", 
                                        [donePhotoQueue count] + [errorPhotoQueue count] + 1, 
                                        [addPhotoQueue count]  + [retryPhotoQueue count] 
-                                       + [donePhotoQueue count] + [errorPhotoQueue count]] retain];
+                                       + [donePhotoQueue count] + [errorPhotoQueue count]]);
             [self unlockProgress];
 
             self.currentItem = [addPhotoQueue objectAtIndex:0];

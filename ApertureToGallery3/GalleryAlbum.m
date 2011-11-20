@@ -45,18 +45,12 @@
 }
 
 - (void)dealloc {
-    self.gallery  = nil;
-    self.url  = nil;
     
-    [info     release];
-    [children release];
-    [formatter release];
     
     info = nil;
     children = nil;
     formatter = nil;
     
-    [super dealloc];
 }
 
 - (void) loadData {
@@ -67,8 +61,7 @@
             myEntityId = [NSNumber numberWithInteger:1];
         }
         [gallery getInfoForItem:myEntityId];
-        [info autorelease];
-        info = [gallery.results retain];
+        info = gallery.results;
 
         if( [[self entityId] integerValue] == 0 ){
             [info setValue:[NSString stringWithFormat:@"%@/index.php/rest/item/0", gallery.url] forKey:@"url"];
@@ -102,12 +95,10 @@
                     
                     GalleryAlbum *node = [[GalleryAlbum alloc] initWithGallery:self.gallery andEntityData:child];
                     [newChildren setObject:node forKey:[child objectForKey:@"url"]];
-                    [node release];
                 }
             }
         }
         
-        [children release];
         children = newChildren;        
         self.childrenAreStale = false;
     }

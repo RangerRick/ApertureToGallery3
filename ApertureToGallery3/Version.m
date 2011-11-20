@@ -27,13 +27,5 @@
     return self;
 }
 
-- (void)dealloc
-{
-    self.iPhotoToGalleryVersion   = nil;
-    self.RestfulGalleryVersion    = nil;
-    self.AppleToGalleryVersion    = nil;
-    self.ApertureToGalleryVersion = nil;
-    [super dealloc];
-}
 
 @end

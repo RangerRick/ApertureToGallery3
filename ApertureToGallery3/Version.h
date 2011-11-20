@@ -16,9 +16,9 @@
     NSNumber* AppleToGalleryVersion;
 }
 
-@property (retain) NSNumber* RestfulGalleryVersion;
-@property (retain) NSNumber* ApertureToGalleryVersion;
-@property (retain) NSNumber* iPhotoToGalleryVersion;
-@property (retain) NSNumber* AppleToGalleryVersion;
+@property (strong) NSNumber* RestfulGalleryVersion;
+@property (strong) NSNumber* ApertureToGalleryVersion;
+@property (strong) NSNumber* iPhotoToGalleryVersion;
+@property (strong) NSNumber* AppleToGalleryVersion;
 
 @end

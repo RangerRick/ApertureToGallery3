@@ -25,8 +25,8 @@
 - (id)initWithGallery:(RestfulGallery *)myGallery andEntityData:(NSMutableDictionary *)myEntityData;
 - (void) initCommon;
 
-@property(retain) RestfulGallery      *gallery;
-@property(retain) NSString            *url;
+@property(strong) RestfulGallery      *gallery;
+@property(strong) NSString            *url;
 @property         BOOL                dataIsStale;
 @property         BOOL                childrenAreStale;
 

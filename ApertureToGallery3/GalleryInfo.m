@@ -38,14 +38,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    self.url      = nil;
-    self.name     = nil;
-    self.key      = nil;
-    self.username = nil;
-    [super dealloc];
-}
 
 - (void) encodeWithCoder:(NSCoder *)coder
 {

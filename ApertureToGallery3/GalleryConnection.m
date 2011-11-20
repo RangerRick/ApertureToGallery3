@@ -16,7 +16,9 @@
 
 - (GalleryConnection *)initWithRequest:(NSMutableURLRequest *)myRequest andDelegate:(id)myDelegate
 {
-    _request    = [myRequest retain];
+    self = [super init];
+
+    _request    = myRequest;
     _connection = [NSURLConnection alloc];
     _mutableData       = [[NSMutableData alloc] init];
     _isRunning    = false;
@@ -31,21 +33,14 @@
 
 - (void)dealloc
 {
-    [_request release];
-    [_connection release];
-    [_mutableData release];
-    [_error release];
     
     _request = nil;
     _connection = nil;
     _mutableData = nil;
 
-    if( _response ){ [_response release]; _response = nil;}
-    if( _error    ){ [_error    release]; _error    = nil;}
+    if( _response ){  _response = nil;}
+    if( _error    ){  _error    = nil;}
     
-    self.results    = nil;
-    self.delegate   = nil;
-    [super dealloc];
 }
 
 #pragma mark NSURLConnection
@@ -68,7 +63,7 @@
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)aResponse
 {
     if( self.bVerbose ){NSLog( @"Gallery Connection Did Received A Response" );}
-    _response = [aResponse retain];
+    _response = aResponse;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)someData
@@ -80,7 +75,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)anError
 {
     if( self.bVerbose ){NSLog( @"Gallery Connection Failed with Error" );}
-    _error = [anError retain];
+    _error = anError;
     
     [self.results setValue:@"ERROR"   forKey:@"RESPONSE_TYPE"];
     [self.results setValue:_error forKey:@"ERROR"];    
@@ -109,8 +104,8 @@
 -(NSMutableDictionary*)parseRequest:(NSData *)myData
 {
     // Get UTF8 String as a NSString from NSData response
-    NSString *galleryResponseString = [[[NSString alloc] initWithData:myData encoding:NSUTF8StringEncoding] autorelease];
-    NSMutableDictionary *newResults = [[NSMutableDictionary new] autorelease];
+    NSString *galleryResponseString = [[NSString alloc] initWithData:myData encoding:NSUTF8StringEncoding];
+    NSMutableDictionary *newResults = [NSMutableDictionary new];
     
     // Testing is received string is a json object. i.e. bounded by {}
     if( [galleryResponseString length] >= 1 )
@@ -126,7 +121,6 @@
             [newResults setValue:@"JSON" forKey:@"RESPONSE_TYPE"];
             
             
-            [parser release];
             parser = nil;
         }
         else if( [galleryResponseString characterAtIndex:0] == '[' && [galleryResponseString characterAtIndex:( [galleryResponseString length]-1)] == ']' )
@@ -136,7 +130,6 @@
             [newResults setValue:[parser objectWithString:galleryResponseString error:nil] forKey:@"RESULTS"];             
             [newResults setValue:@"JSON" forKey:@"RESPONSE_TYPE"];
             
-            [parser release];
             parser = nil;
         }
         else if( [galleryResponseString characterAtIndex:0] == '"' && [galleryResponseString characterAtIndex:( [galleryResponseString length]-1)] == '"' )

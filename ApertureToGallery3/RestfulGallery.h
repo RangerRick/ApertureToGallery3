@@ -7,15 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JSON.h"
+#import "SBJson.h"
 #import "GalleryConnection.h"
 #import "URLCallDelegate.h"
 #import "AddPhotoQueueItem.h"
 #import <Quartz/Quartz.h>
 
 @interface RestfulGallery : NSObject <URLCallDelegate> {
-    NSError*             _error;
-    NSURLResponse*       _response;
     NSData*              _data;
     NSMutableArray*      _addPhotoQueue;
     NSString*            _userAgent;
@@ -31,11 +29,11 @@
     BOOL                 bGalleryValid;
 }
 
-@property(retain) NSString             *url;
-@property(retain) NSString             *galleryApiKey;
+@property(strong) NSString             *url;
+@property(strong) NSString             *galleryApiKey;
 @property         BOOL                 bVerbose;
-@property(retain) NSMutableDictionary  *results;
-@property(retain) id <URLCallDelegate> delegate;
+@property(strong) NSMutableDictionary  *results;
+@property(strong) id <URLCallDelegate> delegate;
 @property         BOOL                 bGalleryValid;
 
 

@@ -38,16 +38,10 @@
 
 - (void)dealloc
 {
-    [_galleryConnection release];
-    [_addPhotoQueue release];
     _galleryConnection = nil;
     _addPhotoQueue = nil;
     
-    self.galleryApiKey     = nil;
-    self.url               = nil;
-    self.results           = nil;
 
-    [super dealloc];
 }
 
 - (void)cancel
@@ -73,7 +67,7 @@
     if( [self bVerbose] ){ NSLog( @"getting API" ); }
     results = nil;
     //build the request
-    NSURL *localURL = [[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest", myGallery]] autorelease];
+    NSURL *localURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest", myGallery]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                                         cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                         timeoutInterval:_standardTimeout];
@@ -86,7 +80,9 @@
                                [password stringByAddingPercentEscapesUsingEncoding:_encoding]];
     NSData   *requestData   = [requestString dataUsingEncoding:_encoding allowLossyConversion:YES];
 	[request setHTTPBody:requestData];
-    
+
+  NSURLResponse *_response;
+  NSError *_error;
     _data = [NSURLConnection sendSynchronousRequest:request returningResponse:&_response error:&_error];
     self.results = [_galleryConnection parseRequest:_data];
 }
@@ -100,7 +96,7 @@
         {
             self.results = nil;
         
-            NSURL *localURL = [[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/item/1", self.url]] autorelease];
+            NSURL *localURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/item/1", self.url]];
             NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                                                 cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                                 timeoutInterval:_shortTimeout];
@@ -112,6 +108,8 @@
             NSData *requestData = [@"ouput=json&type=album" dataUsingEncoding:_encoding allowLossyConversion:YES];
             [request setHTTPBody:requestData];
         
+          NSURLResponse *_response;
+          NSError *_error;
             _data = [NSURLConnection sendSynchronousRequest:request returningResponse:&_response error:&_error];
             self.results = [_galleryConnection parseRequest:_data];
 
@@ -131,7 +129,7 @@
        if( [self bVerbose] ){ NSLog( @"getting API" ); }
        results = nil;
        //build the request
-       NSURL *localURL = [[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest", self.url]] autorelease];
+       NSURL *localURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest", self.url]];
        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                        cachePolicy:NSURLRequestReloadIgnoringCacheData
                                        timeoutInterval:_standardTimeout];
@@ -143,6 +141,8 @@
        NSData   *requestData   = [requestString dataUsingEncoding:_encoding allowLossyConversion:YES];
 	   [request setHTTPBody:requestData];
         
+      NSURLResponse *_response;
+      NSError *_error;
        _data = [NSURLConnection sendSynchronousRequest:request returningResponse:&_response error:&_error];
         self.results = [_galleryConnection parseRequest:_data];
     }
@@ -154,7 +154,7 @@
     {
        if( [self bVerbose] ){ NSLog( @"getting albums for item" ); }
        results = nil;
-       NSURL *localURL = [[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/item/%d", self.url, [restItem integerValue]]] autorelease];
+       NSURL *localURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/item/%d", self.url, [restItem integerValue]]];
        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                            timeoutInterval:_standardTimeout];
@@ -166,6 +166,8 @@
        NSData *requestData = [@"ouput=json&type=album" dataUsingEncoding:_encoding allowLossyConversion:YES];
 	   [request setHTTPBody:requestData];
     
+      NSURLResponse *_response;
+      NSError *_error;
        _data = [NSURLConnection sendSynchronousRequest:request returningResponse:&_response error:&_error];
         self.results = [_galleryConnection parseRequest:_data];
     }
@@ -177,7 +179,7 @@
     {
        if( [self bVerbose] ){ NSLog( @"getting items" ); }
        results = nil;
-       NSURL *localURL = [[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/items", self.url]] autorelease];
+       NSURL *localURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/items", self.url]];
        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                            timeoutInterval:_standardTimeout];
@@ -189,6 +191,8 @@
        NSData *requestData = [ [NSString stringWithFormat:@"urls=[\"%@\"]",[urls componentsJoinedByString:@"\",\""]] dataUsingEncoding:_encoding allowLossyConversion:YES];
        [request setHTTPBody:requestData];
     
+      NSURLResponse *_response;
+      NSError *_error;
        _data = [NSURLConnection sendSynchronousRequest:request returningResponse:&_response error:&_error];
         self.results = [_galleryConnection parseRequest:_data];
     }
@@ -200,12 +204,12 @@
     {
        if( [self bVerbose] ){ NSLog( @"creating album" ); }
        results = nil;
-       SBJsonWriter *jsonWriter = [[[SBJsonWriter alloc] init] autorelease ];
+       SBJsonWriter *jsonWriter = [[SBJsonWriter alloc] init];
     
        [parameters setObject:@"json"  forKey:@"output"];
        [parameters setObject:@"album" forKey:@"type"];
      
-       NSURL *localURL = [[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/item/%d", self.url, [restItem integerValue]]] autorelease];
+       NSURL *localURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@/index.php/rest/item/%d", self.url, [restItem integerValue]]];
        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                            timeoutInterval:_standardTimeout];
@@ -218,6 +222,8 @@
        NSData *requestData = [requestString dataUsingEncoding:_encoding allowLossyConversion:YES];     
        [request setHTTPBody:requestData];
     
+      NSURLResponse *_response;
+      NSError *_error;
        _data = [NSURLConnection sendSynchronousRequest:request returningResponse:&_response error:&_error];
         self.results = [_galleryConnection parseRequest:_data];
    }
@@ -240,7 +246,7 @@
        if( [self bVerbose] ){ NSLog( @"adding photo" ); }
        self.results = nil;
     
-       SBJsonWriter *jsonWriter = [[[SBJsonWriter alloc] init] autorelease ];
+       SBJsonWriter *jsonWriter = [[SBJsonWriter alloc] init];
        if( !isPhoto ){
            [parameters setObject:@"movie"                      forKey:@"type"];
        } else {
@@ -248,14 +254,14 @@
        }
        [parameters setObject:[imagePath lastPathComponent] forKey:@"name"];   
     
-       NSMutableData *requestData = [[[NSMutableData alloc] init] autorelease]; 
-       NSData   *imageData = [[[NSData alloc] initWithContentsOfFile:imagePath] autorelease];
+       NSMutableData *requestData = [[NSMutableData alloc] init]; 
+       NSData   *imageData = [[NSData alloc] initWithContentsOfFile:imagePath];
     
        // Make a unique string for the boundary. Leveraged from Zach Wiley in iPhotoToGallery
        NSString *boundary = [NSString stringWithFormat:@"%@", [[NSProcessInfo processInfo] globallyUniqueString]];
     
        //build the request    
-       NSURL *localURL = [[[NSURL alloc] initWithString:restUrl] autorelease];
+       NSURL *localURL = [[NSURL alloc] initWithString:restUrl];
     
        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:localURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData

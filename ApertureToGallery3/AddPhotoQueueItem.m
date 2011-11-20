@@ -62,12 +62,5 @@
     self.parameters = myParameters;
 }
 
-- (void)dealloc
-{
-    self.path       = nil;
-    self.parameters = nil;
-    self.url        = nil;
-    [super dealloc];
-}
 
 @end

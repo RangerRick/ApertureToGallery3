@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "URLCallDelegate.h"
-#import "JSON.h"
+#import "SBJson.h"
 
 @interface GalleryConnection : NSObject {
     NSMutableData        *_mutableData;
@@ -23,9 +23,9 @@
     id <URLCallDelegate> delegate;
 }
 
-@property(retain)             NSMutableDictionary  *results;
+@property(strong)             NSMutableDictionary  *results;
 @property                     BOOL                 bVerbose;
-@property (retain, nonatomic) id <URLCallDelegate> delegate;
+@property (strong, nonatomic) id <URLCallDelegate> delegate;
 
 - (GalleryConnection *)initWithRequest:(NSMutableURLRequest *)myRequest andDelegate:(id)myDelegate;
 - (void)start;
